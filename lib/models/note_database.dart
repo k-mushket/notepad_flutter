@@ -44,5 +44,13 @@ class NoteDatabase extends ChangeNotifier {
     await isar.writeTxn(
       () => isar.notes.delete(id),
     );
+    await fetchNotes();
+  }
+
+  Future<Note> createNewNote() async {
+    final newNote = Note()
+      ..text = ''; // Тут задаєте початковий текст для запису
+    await isar.writeTxn(() => isar.notes.put(newNote));
+    return newNote;
   }
 }

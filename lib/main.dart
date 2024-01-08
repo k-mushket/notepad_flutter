@@ -11,7 +11,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: ((context) => NoteDatabase()),
-      child: const Notepad(),
+      child: MaterialApp(home: Notepad()),
     ),
   );
 }
