@@ -15,7 +15,7 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   late final TextEditingController textController;
   late final NoteDatabase noteDatabase;
-  bool isSaved = false; // Додаткова змінна для відстеження статусу збереження
+  bool isSaved = false;
 
   @override
   void initState() {
@@ -36,10 +36,8 @@ class _NotePageState extends State<NotePage> {
     final text = textController.text;
     if (text.isNotEmpty && !isSaved) {
       if (widget.note == null) {
-        // Якщо нотатка нова, додаємо її
         await noteDatabase.addNote(text);
       } else {
-        // Якщо редагуємо існуючу нотатку
         await noteDatabase.updateNote(widget.note!.id, text);
       }
       isSaved = true;
@@ -52,9 +50,10 @@ class _NotePageState extends State<NotePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.done),
             onPressed: () {
               saveNote();
+              FocusScope.of(context).unfocus();
             },
           ),
         ],
@@ -63,9 +62,11 @@ class _NotePageState extends State<NotePage> {
         padding: EdgeInsets.all(8.0),
         child: TextField(
           controller: textController,
-          maxLines: null,
-          expands: true,
           keyboardType: TextInputType.multiline,
+          decoration: const InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Start typing',
+          ),
         ),
       ),
     );
