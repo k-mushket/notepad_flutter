@@ -49,7 +49,7 @@ class NoteDatabase extends ChangeNotifier {
 
   Future<Note> createNewNote() async {
     final newNote = Note()
-      ..text = ''; // Тут задаєте початковий текст для запису
+      ..text = ''; 
     await isar.writeTxn(() => isar.notes.put(newNote));
     return newNote;
   }

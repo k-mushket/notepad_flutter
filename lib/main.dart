@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:notepad_flutter/models/note_database.dart';
-import 'package:notepad_flutter/pages/notepad_page.dart';
+import 'package:notepad_flutter/pages/notepad.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +10,7 @@ void main() async {
 
   runApp(
     ChangeNotifierProvider(
-      create: ((context) => NoteDatabase()),
+      create: (context) => NoteDatabase(),
       child: MaterialApp(home: Notepad()),
     ),
   );
