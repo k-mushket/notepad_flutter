@@ -14,26 +14,27 @@ class NotePage extends StatefulWidget {
 
 class _NotePageState extends State<NotePage> {
   late final TextEditingController textController;
-  late final NoteDatabase
-      noteDatabase; // Додаємо змінну для збереження посилання на NoteDatabase
+  late final NoteDatabase noteDatabase;
+  bool isSaved = false; // Додаткова змінна для відстеження статусу збереження
 
   @override
   void initState() {
     super.initState();
     textController = TextEditingController(text: widget.note?.text ?? '');
-    noteDatabase =
-        context.read<NoteDatabase>(); // Зберігаємо посилання на NoteDatabase
+    noteDatabase = context.read<NoteDatabase>();
   }
 
   @override
   void dispose() {
-    saveNoteOnExit(); // Виклик функції збереження при закритті сторінки
+    if (!isSaved) {
+      saveNote();
+    }
     super.dispose();
   }
 
-  Future<void> saveNoteOnExit() async {
+  Future<void> saveNote() async {
     final text = textController.text;
-    if (text.isNotEmpty) {
+    if (text.isNotEmpty && !isSaved) {
       if (widget.note == null) {
         // Якщо нотатка нова, додаємо її
         await noteDatabase.addNote(text);
@@ -41,12 +42,8 @@ class _NotePageState extends State<NotePage> {
         // Якщо редагуємо існуючу нотатку
         await noteDatabase.updateNote(widget.note!.id, text);
       }
+      isSaved = true;
     }
-  }
-
-  void saveNote() async {
-    await saveNoteOnExit();
-    Navigator.pop(context);
   }
 
   @override
@@ -56,7 +53,9 @@ class _NotePageState extends State<NotePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: saveNote,
+            onPressed: () {
+              saveNote();
+            },
           ),
         ],
       ),
