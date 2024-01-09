@@ -49,6 +49,7 @@ class _NotePageState extends State<NotePage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
+          IconButton(onPressed: (){}, icon: Icon(Icons.arrow_back),),
           IconButton(
             icon: Icon(Icons.done),
             onPressed: () {
