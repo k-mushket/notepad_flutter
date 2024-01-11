@@ -26,6 +26,12 @@ class _NotePageState extends State<NotePage> {
     titleTextController = TextEditingController(text: widget.note?.title ?? '');
     bodyTextController = TextEditingController(text: widget.note?.body ?? '');
     noteDatabase = context.read<NoteDatabase>();
+
+    bodyTextController.addListener(
+      () {
+        setState(() {});
+      },
+    );
   }
 
   @override
