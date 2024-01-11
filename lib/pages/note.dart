@@ -8,21 +8,23 @@ import 'package:notepad_flutter/models/note_database.dart';
 class NotePage extends StatefulWidget {
   final Note? note;
 
-  NotePage({Key? key, this.note}) : super(key: key);
+  const NotePage({Key? key, this.note}) : super(key: key);
 
   @override
   State<NotePage> createState() => _NotePageState();
 }
 
 class _NotePageState extends State<NotePage> {
-  late final TextEditingController textController;
+  late final TextEditingController titleTextController;
+  late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
   bool isSaved = false;
 
   @override
   void initState() {
     super.initState();
-    textController = TextEditingController(text: widget.note?.text ?? '');
+    titleTextController = TextEditingController(text: widget.note?.title ?? '');
+    bodyTextController = TextEditingController(text: widget.note?.body ?? '');
     noteDatabase = context.read<NoteDatabase>();
   }
 
@@ -35,12 +37,13 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<void> saveNote() async {
-    final text = textController.text;
-    if (text.isNotEmpty && !isSaved) {
+    final title = titleTextController.text;
+    final body = bodyTextController.text;
+    if ((title.isNotEmpty && !isSaved) || (body.isNotEmpty && !isSaved)) {
       if (widget.note == null) {
-        await noteDatabase.addNote(text);
+        await noteDatabase.addNote(title, body);
       } else {
-        await noteDatabase.updateNote(widget.note!.id, text);
+        await noteDatabase.updateNote(widget.note!.id, title, body);
       }
       isSaved = true;
     }
@@ -48,20 +51,20 @@ class _NotePageState extends State<NotePage> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
+    final creationDate = DateFormat('dd MMMM HH:mm').format(DateTime.now());
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
           ),
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
           ),
           IconButton(
-            icon: Icon(Icons.done),
+            icon: const Icon(Icons.done),
             onPressed: () {
               saveNote();
               FocusScope.of(context).unfocus();
@@ -70,20 +73,30 @@ class _NotePageState extends State<NotePage> {
         ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            TextField(
+              controller: titleTextController,
+              maxLines: 1,
+              keyboardType: TextInputType.multiline,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Title',
+                hintStyle: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
             Row(
               children: [
                 Text(
-                  '${DateFormat('dd MMMM HH:mm').format(now)}'
+                  '$creationDate'
                   '\u0009|\u0009'
-                  '${textController.text.length} character',
+                  '${bodyTextController.text.length} character',
                 ),
               ],
             ),
             TextField(
-              controller: textController,
+              controller: bodyTextController,
               keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
                 border: InputBorder.none,

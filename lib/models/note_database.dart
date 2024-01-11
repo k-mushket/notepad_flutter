@@ -16,11 +16,12 @@ class NoteDatabase extends ChangeNotifier {
     );
   }
 
-  Future<void> addNote(String textFromUser) async {
-    final newNote = Note()..text = textFromUser;
+  Future<void> addNote(String title, String body) async {
+    final newNote = Note()
+      ..title = title
+      ..body = body;
 
     await isar.writeTxn(() => isar.notes.put(newNote));
-
     fetchNotes();
   }
 
@@ -31,10 +32,11 @@ class NoteDatabase extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateNote(int id, String newText) async {
+  Future<void> updateNote(int id, String newTitle, String newBody) async {
     final existingNote = await isar.notes.get(id);
     if (existingNote != null) {
-      existingNote.text = newText;
+      existingNote.title = newTitle;
+      existingNote.body = newBody;
       await isar.writeTxn(() => isar.notes.put(existingNote));
       await fetchNotes();
     }
@@ -49,7 +51,8 @@ class NoteDatabase extends ChangeNotifier {
 
   Future<Note> createNewNote() async {
     final newNote = Note()
-      ..text = ''; 
+      ..title = ''
+      ..body = '';
     await isar.writeTxn(() => isar.notes.put(newNote));
     return newNote;
   }

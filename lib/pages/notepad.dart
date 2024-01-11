@@ -5,7 +5,7 @@ import 'package:notepad_flutter/pages/note.dart';
 import 'package:provider/provider.dart';
 
 class Notepad extends StatefulWidget {
-  Notepad({super.key});
+  const Notepad({super.key});
 
   @override
   State<Notepad> createState() => _NotepadState();
@@ -18,10 +18,10 @@ class _NotepadState extends State<Notepad> {
     readNotes();
   }
 
-   void openNewNotePage() {
+  void openNewNotePage() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => NotePage(),
+        builder: (context) => const NotePage(),
       ),
     );
   }
@@ -51,7 +51,7 @@ class _NotepadState extends State<Notepad> {
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: openNewNotePage,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -73,10 +73,11 @@ class _NotepadState extends State<Notepad> {
                 ),
                 child: Row(
                   children: [
-                    Text(note.text),
+                    Text(note.title),
+                    Text(note.body),
                     IconButton(
                       onPressed: () => deleteNote(note.id),
-                      icon: Icon(Icons.delete),
+                      icon: const Icon(Icons.delete),
                     ),
                   ],
                 ),
