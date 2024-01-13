@@ -18,6 +18,7 @@ class _NotePageState extends State<NotePage> {
   late final TextEditingController titleTextController;
   late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
+  late final FocusNode bodyFocusNode;
   String? _originalText;
   bool isSaved = false;
 
@@ -28,6 +29,7 @@ class _NotePageState extends State<NotePage> {
     bodyTextController = TextEditingController(text: widget.note?.body ?? '');
     noteDatabase = context.read<NoteDatabase>();
     _originalText = bodyTextController.text;
+    bodyFocusNode = FocusNode();
 
     bodyTextController.addListener(
       () {
@@ -51,12 +53,28 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
-  @override
-  void dispose() {
-    if (!isSaved) {
-      saveNote();
-    }
-    super.dispose();
+  void showOverlay(BuildContext context) {
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        child: Row(
+          children: [
+            IconButton(icon: Icon(Icons.one_k), onPressed: () {}),
+            IconButton(icon: Icon(Icons.two_k), onPressed: () {}),
+            IconButton(icon: Icon(Icons.three_k), onPressed: () {}),
+            IconButton(icon: Icon(Icons.four_k), onPressed: () {}),
+          ],
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(overlayEntry);
+
+    bodyFocusNode.addListener(() {
+      if (!bodyFocusNode.hasFocus) {
+        overlayEntry.remove();
+      }
+    });
   }
 
   Future<void> saveNote() async {
@@ -70,6 +88,17 @@ class _NotePageState extends State<NotePage> {
       }
       isSaved = true;
     }
+  }
+
+  @override
+  void dispose() {
+    if (!isSaved) {
+      saveNote();
+    }
+    bodyTextController.removeListener;
+    bodyTextController.dispose();
+    bodyFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -129,6 +158,8 @@ class _NotePageState extends State<NotePage> {
                   border: InputBorder.none,
                   hintText: 'Start typing',
                 ),
+                focusNode: bodyFocusNode,
+                onTap: () => showOverlay(context),
               ),
             ),
           ],
