@@ -109,6 +109,7 @@ class _NotePageState extends State<NotePage> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
           IconButton(
             onPressed: clearText,

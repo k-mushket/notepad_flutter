@@ -48,11 +48,14 @@ class _NotepadState extends State<Notepad> {
     List<Note> currentNotes = noteDatabase.currentNotes;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: openNewNotePage,
         child: const Icon(Icons.add),
       ),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
         padding: const EdgeInsets.all(10),
         child: GridView.builder(
