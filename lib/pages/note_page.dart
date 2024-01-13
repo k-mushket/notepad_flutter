@@ -18,6 +18,7 @@ class _NotePageState extends State<NotePage> {
   late final TextEditingController titleTextController;
   late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
+  String? _originalText;
   bool isSaved = false;
 
   @override
@@ -26,12 +27,28 @@ class _NotePageState extends State<NotePage> {
     titleTextController = TextEditingController(text: widget.note?.title ?? '');
     bodyTextController = TextEditingController(text: widget.note?.body ?? '');
     noteDatabase = context.read<NoteDatabase>();
+    _originalText = bodyTextController.text;
 
     bodyTextController.addListener(
       () {
         setState(() {});
       },
     );
+  }
+
+  void clearText() {
+    setState(() {
+      _originalText = bodyTextController.text;
+      bodyTextController.clear();
+    });
+  }
+
+  void restoreText() {
+    if (_originalText != null) {
+      setState(() {
+        bodyTextController.text = _originalText!;
+      });
+    }
   }
 
   @override
@@ -65,11 +82,11 @@ class _NotePageState extends State<NotePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: clearText,
             icon: const Icon(Icons.arrow_back),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: restoreText,
             icon: const Icon(Icons.arrow_forward),
           ),
           IconButton(
@@ -92,7 +109,7 @@ class _NotePageState extends State<NotePage> {
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Title',
-                hintStyle: TextStyle(fontWeight: FontWeight.bold),
+                hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
             ),
             Row(
@@ -104,12 +121,14 @@ class _NotePageState extends State<NotePage> {
                 ),
               ],
             ),
-            TextField(
-              controller: bodyTextController,
-              keyboardType: TextInputType.multiline,
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Start typing',
+            Expanded(
+              child: TextField(
+                controller: bodyTextController,
+                keyboardType: TextInputType.multiline,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Start typing',
+                ),
               ),
             ),
           ],
