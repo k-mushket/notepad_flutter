@@ -17,17 +17,10 @@ class NoteDatabase extends ChangeNotifier {
   }
 
   Future<void> addNote(String title, String body) async {
-    final newNote = Note();
-    if (title.isEmpty) {
-      newNote.title = body;
-      newNote.body = 'No text';
-    } else if (body.isEmpty & title.isNotEmpty) {
-      newNote.title = title;
-      newNote.body = 'No text';
-    } else {
-      newNote.title = title;
-      newNote.body = body;
-    }
+    final newNote = Note()
+      ..title = title
+      ..body = body
+      ..creationDate = DateTime.now();
 
     await isar.writeTxn(() => isar.notes.put(newNote));
     fetchNotes();

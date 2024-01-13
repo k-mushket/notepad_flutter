@@ -57,7 +57,10 @@ class _NotePageState extends State<NotePage> {
 
   @override
   Widget build(BuildContext context) {
-    final creationDate = DateFormat('dd MMMM HH:mm').format(DateTime.now());
+    final displayDate = widget.note?.creationDate != null
+        ? DateFormat('dd MMMM HH:mm').format(widget.note!.creationDate!)
+        : DateFormat('dd MMMM HH:mm').format(DateTime.now());
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -95,7 +98,7 @@ class _NotePageState extends State<NotePage> {
             Row(
               children: [
                 Text(
-                  '$creationDate'
+                  '$displayDate'
                   '\u0009|\u0009'
                   '${bodyTextController.text.length} character',
                 ),
