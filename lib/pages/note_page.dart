@@ -19,6 +19,7 @@ class _NotePageState extends State<NotePage> {
   late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
   late final FocusNode bodyFocusNode;
+  bool bodyFocus = false;
   String? _originalText;
   bool isSaved = false;
 
@@ -57,24 +58,59 @@ class _NotePageState extends State<NotePage> {
     OverlayEntry overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        child: Row(
-          children: [
-            IconButton(icon: Icon(Icons.one_k), onPressed: () {}),
-            IconButton(icon: Icon(Icons.two_k), onPressed: () {}),
-            IconButton(icon: Icon(Icons.three_k), onPressed: () {}),
-            IconButton(icon: Icon(Icons.four_k), onPressed: () {}),
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: Icon(Icons.one_k),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Icon(Icons.two_k),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Icon(Icons.three_k),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Icon(Icons.four_k),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: Icon(Icons.five_k),
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
 
     Overlay.of(context)?.insert(overlayEntry);
+    isbodyFocused();
 
     bodyFocusNode.addListener(() {
       if (!bodyFocusNode.hasFocus) {
         overlayEntry.remove();
       }
     });
+  }
+
+  void isbodyFocused() {
+    bodyFocus = true;
   }
 
   Future<void> saveNote() async {
@@ -111,21 +147,37 @@ class _NotePageState extends State<NotePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
-          IconButton(
-            onPressed: clearText,
-            icon: const Icon(Icons.arrow_back),
-          ),
-          IconButton(
-            onPressed: restoreText,
-            icon: const Icon(Icons.arrow_forward),
-          ),
-          IconButton(
-            icon: const Icon(Icons.done),
-            onPressed: () {
-              saveNote();
-              FocusScope.of(context).unfocus();
-            },
-          ),
+          if (!bodyFocus) ...[
+            IconButton(
+              onPressed: clearText,
+              icon: const Icon(Icons.arrow_back),
+            ),
+            IconButton(
+              onPressed: restoreText,
+              icon: const Icon(Icons.arrow_forward),
+            ),
+            IconButton(
+              icon: const Icon(Icons.done),
+              onPressed: () {
+                saveNote();
+                FocusScope.of(context).unfocus();
+              },
+            ),
+          ],
+          if (bodyFocus) ...[
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.ios_share_outlined),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.imagesearch_roller_outlined),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.more_vert),
+            ),
+          ],
         ],
       ),
       body: Padding(
