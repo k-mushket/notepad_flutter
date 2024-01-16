@@ -72,17 +72,37 @@ class _NotepadState extends State<Notepad> {
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey,
+                  color: Colors.white38,
                 ),
-                child: Row(
-                  children: [
-                    Text(note.title),
-                    Text(note.body),
-                    IconButton(
-                      onPressed: () => deleteNote(note.id),
-                      icon: const Icon(Icons.delete),
-                    ),
-                  ],
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        note.title,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      Text(
+                        note.body,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.black38),
+                      ),
+                      IconButton(
+                        onPressed: () => deleteNote(note.id),
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

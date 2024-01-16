@@ -99,10 +99,12 @@ class _NotePageState extends State<NotePage> {
         ),
       ),
     );
-    Overlay.of(context)?.insert(overlayEntry!);
+    bodyFocus = true;
+    Overlay.of(context).insert(overlayEntry!);
   }
 
   void removeOverlay() {
+    bodyFocus = false;
     overlayEntry?.remove();
     overlayEntry = null;
   }
@@ -190,7 +192,7 @@ class _NotePageState extends State<NotePage> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             TextField(
