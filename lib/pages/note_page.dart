@@ -19,6 +19,8 @@ class _NotePageState extends State<NotePage> {
   late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
   late final FocusNode bodyFocusNode;
+  OverlayEntry? overlayEntry;
+
   bool bodyFocus = false;
   String? _originalText;
   bool isSaved = false;
@@ -29,14 +31,93 @@ class _NotePageState extends State<NotePage> {
     titleTextController = TextEditingController(text: widget.note?.title ?? '');
     bodyTextController = TextEditingController(text: widget.note?.body ?? '');
     noteDatabase = context.read<NoteDatabase>();
-    _originalText = bodyTextController.text;
     bodyFocusNode = FocusNode();
+    _originalText = bodyTextController.text;
 
     bodyTextController.addListener(
       () {
         setState(() {});
       },
     );
+
+    bodyFocusNode.addListener(
+      () {
+        if (bodyFocusNode.hasFocus) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => showOverlay(context));
+        } else {
+          removeOverlay();
+        }
+      },
+    );
+  }
+
+  void showOverlay(BuildContext context) {
+    if (overlayEntry != null) {
+      return;
+    }
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.waves),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.image_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.format_paint_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.check_box_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.font_download_off),
+                  onPressed: () {},
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context)?.insert(overlayEntry!);
+  }
+
+  void removeOverlay() {
+    overlayEntry?.remove();
+    overlayEntry = null;
+  }
+
+  Future<void> saveNote() async {
+    final title = titleTextController.text;
+    final body = bodyTextController.text;
+    if ((title.isNotEmpty && !isSaved) || (body.isNotEmpty && !isSaved)) {
+      if (widget.note == null) {
+        await noteDatabase.addNote(title, body);
+      } else {
+        await noteDatabase.updateNote(widget.note!.id, title, body);
+      }
+      isSaved = true;
+    }
   }
 
   void clearText() {
@@ -51,78 +132,6 @@ class _NotePageState extends State<NotePage> {
       setState(() {
         bodyTextController.text = _originalText!;
       });
-    }
-  }
-
-  void showOverlay(BuildContext context) {
-    OverlayEntry overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.one_k),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.two_k),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.three_k),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.four_k),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.five_k),
-                  onPressed: () {},
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context)?.insert(overlayEntry);
-    isbodyFocused();
-
-    bodyFocusNode.addListener(() {
-      if (!bodyFocusNode.hasFocus) {
-        overlayEntry.remove();
-      }
-    });
-  }
-
-  void isbodyFocused() {
-    bodyFocus = true;
-  }
-
-  Future<void> saveNote() async {
-    final title = titleTextController.text;
-    final body = bodyTextController.text;
-    if ((title.isNotEmpty && !isSaved) || (body.isNotEmpty && !isSaved)) {
-      if (widget.note == null) {
-        await noteDatabase.addNote(title, body);
-      } else {
-        await noteDatabase.updateNote(widget.note!.id, title, body);
-      }
-      isSaved = true;
     }
   }
 
@@ -147,7 +156,7 @@ class _NotePageState extends State<NotePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         actions: [
-          if (!bodyFocus) ...[
+          if (bodyFocus) ...[
             IconButton(
               onPressed: clearText,
               icon: const Icon(Icons.arrow_back),
@@ -164,7 +173,7 @@ class _NotePageState extends State<NotePage> {
               },
             ),
           ],
-          if (bodyFocus) ...[
+          if (!bodyFocus) ...[
             IconButton(
               onPressed: () {},
               icon: const Icon(Icons.ios_share_outlined),
@@ -207,6 +216,7 @@ class _NotePageState extends State<NotePage> {
               child: TextField(
                 controller: bodyTextController,
                 keyboardType: TextInputType.multiline,
+                maxLines: null,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Start typing',
