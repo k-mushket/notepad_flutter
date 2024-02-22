@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/services/note_database.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
+import 'package:notepad_flutter/widgets/notepad_appbar.dart';
 import 'package:provider/provider.dart';
 
 class Notepad extends StatefulWidget {
@@ -15,10 +16,10 @@ class _NotepadState extends State<Notepad> {
   @override
   void initState() {
     super.initState();
-    readNotes();
+    _readNotes();
   }
 
-  void openNewNotePage() {
+  void _openNewNotePage() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const NotePage(),
@@ -26,7 +27,7 @@ class _NotepadState extends State<Notepad> {
     );
   }
 
-  void openNotePage(Note note) {
+  void _openNotePage(Note note) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => NotePage(note: note),
@@ -34,11 +35,11 @@ class _NotepadState extends State<Notepad> {
     );
   }
 
-  void readNotes() {
+  void _readNotes() {
     context.read<NoteDatabase>().fetchNotes();
   }
 
-  void deleteNote(int id) {
+  void _deleteNote(int id) {
     context.read<NoteDatabase>().deleteNote(id);
   }
 
@@ -48,11 +49,9 @@ class _NotepadState extends State<Notepad> {
     List<Note> currentNotes = noteDatabase.currentNotes;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
-      ),
+      appBar: const NotepadAppBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: openNewNotePage,
+        onPressed: _openNewNotePage,
         child: const Icon(Icons.add),
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -68,7 +67,7 @@ class _NotepadState extends State<Notepad> {
           itemBuilder: (context, index) {
             final note = currentNotes[index];
             return GestureDetector(
-              onTap: () => openNotePage(note),
+              onTap: () => _openNotePage(note),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -98,7 +97,7 @@ class _NotepadState extends State<Notepad> {
                         style: const TextStyle(color: Colors.black38),
                       ),
                       IconButton(
-                        onPressed: () => deleteNote(note.id),
+                        onPressed: () => _deleteNote(note.id),
                         icon: const Icon(Icons.delete),
                       ),
                     ],
