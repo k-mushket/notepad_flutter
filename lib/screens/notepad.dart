@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
 
 import 'package:notepad_flutter/screens/notepad_check.dart';
+import 'package:notepad_flutter/screens/settings.dart';
 import 'package:notepad_flutter/widgets/notepad/notepad_items.dart';
 
 class Notepad extends StatefulWidget {
@@ -79,7 +80,13 @@ class _NotepadState extends State<Notepad> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Settings(),
+                ),
+              );
+            },
           ),
         ],
       ),
