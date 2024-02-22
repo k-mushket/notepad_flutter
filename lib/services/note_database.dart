@@ -22,7 +22,7 @@ class NoteDatabase extends ChangeNotifier {
       ..body = body
       ..creationDate = DateTime.now();
 
-    await isar.writeTxn(() => isar.notes.put(newNote));
+    await isar.writeTxn(() => isar.notes.put(newNote)); // insert & update
     fetchNotes();
   }
 
@@ -30,7 +30,7 @@ class NoteDatabase extends ChangeNotifier {
     List<Note> fetchNotes = await isar.notes.where().findAll();
     currentNotes.clear();
     currentNotes.addAll(fetchNotes);
-    notifyListeners();
+    notifyListeners(); 
   }
 
   Future<void> updateNote(int id, String newTitle, String newBody) async {

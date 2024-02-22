@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:notepad_flutter/theme/theme_provider.dart';
-import 'package:notepad_flutter/models/note_database.dart';
-import 'package:notepad_flutter/pages/notepad.dart';
+import 'package:notepad_flutter/services/note_database.dart';
+import 'package:notepad_flutter/screens/notepad.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

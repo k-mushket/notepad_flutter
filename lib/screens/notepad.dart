@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notepad_flutter/models/note.dart';
-import 'package:notepad_flutter/models/note_database.dart';
-import 'package:notepad_flutter/pages/note_page.dart';
+import 'package:notepad_flutter/services/note_database.dart';
+import 'package:notepad_flutter/screens/note_page.dart';
 import 'package:provider/provider.dart';
 
 class Notepad extends StatefulWidget {

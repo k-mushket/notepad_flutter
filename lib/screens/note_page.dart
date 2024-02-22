@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:notepad_flutter/models/note.dart';
-import 'package:notepad_flutter/models/note_database.dart';
+import 'package:notepad_flutter/services/note_database.dart';
 
 class NotePage extends StatefulWidget {
   final Note? note;
@@ -21,7 +21,7 @@ class _NotePageState extends State<NotePage> {
   late final FocusNode bodyFocusNode;
   OverlayEntry? overlayEntry;
 
-  bool bodyFocus = false;
+  bool bodyFocus = true;
   String? _originalText;
   bool isSaved = false;
 
@@ -40,11 +40,11 @@ class _NotePageState extends State<NotePage> {
       },
     );
 
+    //
     bodyFocusNode.addListener(
       () {
         if (bodyFocusNode.hasFocus) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => showOverlay(context));
+          showOverlay(context);
         } else {
           removeOverlay();
         }
@@ -142,8 +142,10 @@ class _NotePageState extends State<NotePage> {
     if (!isSaved) {
       saveNote();
     }
+    titleTextController.dispose();
     bodyTextController.removeListener;
     bodyTextController.dispose();
+    bodyFocusNode.removeListener;
     bodyFocusNode.dispose();
     super.dispose();
   }
