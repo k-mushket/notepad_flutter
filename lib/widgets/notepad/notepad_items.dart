@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
 import 'package:notepad_flutter/services/note_database.dart';
@@ -23,6 +24,44 @@ class _NotepadItemsState extends State<NotepadItems> {
       MaterialPageRoute(
         builder: (context) => NotePage(note: note),
       ),
+    );
+  }
+
+  void _openSpecialInstruments(Note note) {
+    showModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) {
+        return Row(
+          children: [
+            Expanded(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.abc),
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.abc),
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.abc),
+              ),
+            ),
+            Expanded(
+              child: IconButton(
+                onPressed: () => _deleteNote(note.id),
+                icon: const Icon(Icons.delete),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -55,8 +94,12 @@ class _NotepadItemsState extends State<NotepadItems> {
         itemCount: currentNotes.length,
         itemBuilder: (context, index) {
           final note = currentNotes[index];
+          final displayDate = note.creationDate != null
+              ? DateFormat('dd MMMM HH:mm').format(note.creationDate!)
+              : DateFormat('dd MMMM HH:mm').format(DateTime.now());
           return GestureDetector(
             onTap: () => _openNotePage(note),
+            onLongPress: () => _openSpecialInstruments(note),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -85,9 +128,10 @@ class _NotepadItemsState extends State<NotepadItems> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(color: Colors.black38),
                     ),
-                    IconButton(
-                      onPressed: () => _deleteNote(note.id),
-                      icon: const Icon(Icons.delete),
+                    Text(
+                      displayDate,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.black38),
                     ),
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notepad_flutter/widgets/note_page/instruments_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -19,7 +20,6 @@ class _NotePageState extends State<NotePage> {
   late final TextEditingController bodyTextController;
   late final NoteDatabase noteDatabase;
   late final FocusNode bodyFocusNode;
-  OverlayEntry? overlayEntry;
 
   bool bodyFocus = true;
   String? _originalText;
@@ -40,73 +40,16 @@ class _NotePageState extends State<NotePage> {
       },
     );
 
-    //
     bodyFocusNode.addListener(
       () {
         if (bodyFocusNode.hasFocus) {
-          showOverlay(context);
+          InstrumentsOverlay.showOverlay(context);
         } else {
-          removeOverlay();
+          InstrumentsOverlay.removeOverlay();
+          bodyFocus = false;
         }
       },
     );
-  }
-
-  void showOverlay(BuildContext context) {
-    if (overlayEntry != null) {
-      return;
-    }
-    overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.waves),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.image_outlined),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.format_paint_outlined),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.check_box_outlined),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.font_download_off),
-                  onPressed: () {},
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    bodyFocus = true;
-    Overlay.of(context).insert(overlayEntry!);
-  }
-
-  void removeOverlay() {
-    bodyFocus = false;
-    overlayEntry?.remove();
-    overlayEntry = null;
   }
 
   Future<void> saveNote() async {
@@ -226,7 +169,6 @@ class _NotePageState extends State<NotePage> {
                   hintText: 'Start typing',
                 ),
                 focusNode: bodyFocusNode,
-                onTap: () => showOverlay(context),
               ),
             ),
           ],
