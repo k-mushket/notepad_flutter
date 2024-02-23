@@ -6,6 +6,7 @@ import 'package:notepad_flutter/services/note_database.dart';
 import 'package:notepad_flutter/screens/notepad.dart';
 
 void main() async {
+  // initialize note isar db
   WidgetsFlutterBinding.ensureInitialized();
   await NoteDatabase.initialize();
 

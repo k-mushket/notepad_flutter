@@ -16,57 +16,7 @@ class _NotepadItemsState extends State<NotepadItems> {
   @override
   void initState() {
     super.initState();
-    _readNotes();
-  }
-
-  void _openNotePage(Note note) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => NotePage(note: note),
-      ),
-    );
-  }
-
-  void _openSpecialInstruments(Note note) {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (context) {
-        return Row(
-          children: [
-            Expanded(
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.abc),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.abc),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.abc),
-              ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () => _deleteNote(note.id),
-                icon: const Icon(Icons.delete),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _readNotes() {
-    context.read<NoteDatabase>().fetchNotes();
+    context.read<NoteDatabase>().readNotes();
   }
 
   void _deleteNote(int id) {
@@ -76,6 +26,14 @@ class _NotepadItemsState extends State<NotepadItems> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _openNotePage(Note note) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => NotePage(note: note),
+      ),
+    );
   }
 
   @override
@@ -99,7 +57,7 @@ class _NotepadItemsState extends State<NotepadItems> {
               : DateFormat('dd MMMM HH:mm').format(DateTime.now());
           return GestureDetector(
             onTap: () => _openNotePage(note),
-            onLongPress: () => _openSpecialInstruments(note),
+            onLongPress: () => () {},
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -121,6 +79,10 @@ class _NotepadItemsState extends State<NotepadItems> {
                     ),
                     const SizedBox(
                       height: 14,
+                    ),
+                    IconButton(
+                      onPressed: () => _deleteNote(note.id),
+                      icon: const Icon(Icons.delete),
                     ),
                     Text(
                       note.body,

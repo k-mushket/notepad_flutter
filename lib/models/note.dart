@@ -7,5 +7,5 @@ class Note {
   Id id = Isar.autoIncrement;
   late String title;
   late String body;
-  DateTime? creationDate;
+  DateTime creationDate = DateTime.now();
 }

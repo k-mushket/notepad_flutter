@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notepad_flutter/widgets/note_page/instruments_overlay.dart';
+import 'package:notepad_flutter/widgets/note_page/note_page_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -43,9 +43,9 @@ class _NotePageState extends State<NotePage> {
     bodyFocusNode.addListener(
       () {
         if (bodyFocusNode.hasFocus) {
-          InstrumentsOverlay.showOverlay(context);
+          NotePageOverlay.showOverlay(context);
         } else {
-          InstrumentsOverlay.removeOverlay();
+          NotePageOverlay.removeOverlay();
           bodyFocus = false;
         }
       },
@@ -57,7 +57,7 @@ class _NotePageState extends State<NotePage> {
     final body = bodyTextController.text;
     if ((title.isNotEmpty && !isSaved) || (body.isNotEmpty && !isSaved)) {
       if (widget.note == null) {
-        await noteDatabase.addNote(title, body);
+        await noteDatabase.createNote(title, body);
       } else {
         await noteDatabase.updateNote(widget.note!.id, title, body);
       }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class InstrumentsOverlay {
+class NotePageOverlay {
   static OverlayEntry? _overlayEntry;
 
   static void showOverlay(BuildContext context) {

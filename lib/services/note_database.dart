@@ -16,21 +16,24 @@ class NoteDatabase extends ChangeNotifier {
     );
   }
 
-  Future<void> addNote(String title, String body) async {
+  Future<void> createNote(String title, String body) async {
+    // create a new note object
     final newNote = Note()
       ..title = title
-      ..body = body
-      ..creationDate = DateTime.now();
+      ..body = body;
 
-    await isar.writeTxn(() => isar.notes.put(newNote)); // insert & update
-    fetchNotes();
+    // save to db
+    await isar.writeTxn(() => isar.notes.put(newNote));
+
+    // re-read from db
+    readNotes();
   }
 
-  Future<void> fetchNotes() async {
+  Future<void> readNotes() async {
     List<Note> fetchNotes = await isar.notes.where().findAll();
     currentNotes.clear();
     currentNotes.addAll(fetchNotes);
-    notifyListeners(); 
+    notifyListeners();
   }
 
   Future<void> updateNote(int id, String newTitle, String newBody) async {
@@ -38,8 +41,9 @@ class NoteDatabase extends ChangeNotifier {
     if (existingNote != null) {
       existingNote.title = newTitle;
       existingNote.body = newBody;
+      existingNote.creationDate = DateTime.now();
       await isar.writeTxn(() => isar.notes.put(existingNote));
-      await fetchNotes();
+      await readNotes();
     }
   }
 
@@ -47,14 +51,6 @@ class NoteDatabase extends ChangeNotifier {
     await isar.writeTxn(
       () => isar.notes.delete(id),
     );
-    await fetchNotes();
-  }
-
-  Future<Note> createNewNote() async {
-    final newNote = Note()
-      ..title = ''
-      ..body = '';
-    await isar.writeTxn(() => isar.notes.put(newNote));
-    return newNote;
+    await readNotes();
   }
 }
