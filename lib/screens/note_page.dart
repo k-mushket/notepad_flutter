@@ -96,7 +96,7 @@ class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
     final displayDate = widget.note?.creationDate != null
-        ? DateFormat('dd MMMM HH:mm').format(widget.note!.creationDate!)
+        ? DateFormat('dd MMMM HH:mm').format(widget.note!.creationDate)
         : DateFormat('dd MMMM HH:mm').format(DateTime.now());
 
     return Scaffold(

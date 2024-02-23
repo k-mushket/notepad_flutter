@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
 import 'package:notepad_flutter/services/note_database.dart';
-import 'package:provider/provider.dart';
 
 class NotepadItems extends StatefulWidget {
   const NotepadItems({super.key});
@@ -13,6 +14,8 @@ class NotepadItems extends StatefulWidget {
 }
 
 class _NotepadItemsState extends State<NotepadItems> {
+  static OverlayEntry? _overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -36,67 +39,119 @@ class _NotepadItemsState extends State<NotepadItems> {
     );
   }
 
+  void _overlayInstruments(Note note) {
+    if (_overlayEntry != null) {
+      return;
+    }
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.waves),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.image_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.format_paint_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  icon: const Icon(Icons.check_box_outlined),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                child: IconButton(
+                  onPressed: () => _deleteNote(note.id),
+                  icon: const Icon(Icons.delete),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  void removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final noteDatabase = context.watch<NoteDatabase>();
     List<Note> currentNotes = noteDatabase.currentNotes;
 
+    currentNotes.sort(
+      (first, second) => second.creationDate.compareTo(first.creationDate),
+    );
+
     return Container(
       padding: const EdgeInsets.all(10),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      child: MasonryGridView.builder(
+        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 5,
-          mainAxisSpacing: 5,
         ),
         itemCount: currentNotes.length,
         itemBuilder: (context, index) {
           final note = currentNotes[index];
-          final displayDate = note.creationDate != null
-              ? DateFormat('dd MMMM HH:mm').format(note.creationDate!)
-              : DateFormat('dd MMMM HH:mm').format(DateTime.now());
+          final displayDate =
+              DateFormat('dd MMMM HH:mm').format(note.creationDate);
           return GestureDetector(
             onTap: () => _openNotePage(note),
-            onLongPress: () => () {},
+            onLongPress: () => _overlayInstruments(note),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white38,
               ),
-              child: Container(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      note.title,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
+              margin: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    note.title.isEmpty ? note.body : note.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    const SizedBox(
-                      height: 14,
-                    ),
-                    IconButton(
-                      onPressed: () => _deleteNote(note.id),
-                      icon: const Icon(Icons.delete),
-                    ),
-                    Text(
-                      note.body,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.black38),
-                    ),
-                    Text(
-                      displayDate,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.black38),
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  Text(
+                    note.title.isEmpty ? 'No text' : note.body,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.black38),
+                  ),
+                  Text(
+                    displayDate,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.black38),
+                  ),
+                ],
               ),
             ),
           );
