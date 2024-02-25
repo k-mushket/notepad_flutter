@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
+
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
 import 'package:notepad_flutter/services/note_database.dart';
@@ -39,7 +41,7 @@ class _NotepadItemsState extends State<NotepadItems> {
     );
   }
 
-  void _overlayInstruments(Note note) {
+  Future<void> _overlayInstruments(Note note) async {
     if (_overlayEntry != null) {
       return;
     }
@@ -52,33 +54,31 @@ class _NotepadItemsState extends State<NotepadItems> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.waves),
+                child: TextButton.icon(
+                  icon: const Icon(Icons.lock_outline),
+                  label: const Text('Hide'),
                   onPressed: () {},
                 ),
               ),
               Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.image_outlined),
+                child: TextButton.icon(
+                  icon: const Icon(Icons.arrow_upward),
+                  label: const Text('Pin'),
                   onPressed: () {},
                 ),
               ),
               Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.format_paint_outlined),
+                child: TextButton.icon(
+                  icon: const Icon(Icons.exit_to_app_outlined),
+                  label: const Text('Move to'),
                   onPressed: () {},
                 ),
               ),
               Expanded(
-                child: IconButton(
-                  icon: const Icon(Icons.check_box_outlined),
-                  onPressed: () {},
-                ),
-              ),
-              Expanded(
-                child: IconButton(
+                child: TextButton.icon(
                   onPressed: () => _deleteNote(note.id),
-                  icon: const Icon(Icons.delete),
+                  label: const Text('Delete'),
+                  icon: const Icon(Icons.delete_outline),
                 ),
               ),
             ],
@@ -116,7 +116,13 @@ class _NotepadItemsState extends State<NotepadItems> {
               DateFormat('dd MMMM HH:mm').format(note.creationDate);
           return GestureDetector(
             onTap: () => _openNotePage(note),
-            onLongPress: () => _overlayInstruments(note),
+            onLongPress: () {
+              Vibration.vibrate(
+                pattern: [0, 50],
+                intensities: [0, 100],
+              );
+              _overlayInstruments(note);
+            },
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -141,7 +147,10 @@ class _NotepadItemsState extends State<NotepadItems> {
                     height: 14,
                   ),
                   Text(
-                    note.title.isEmpty ? 'No text' : note.body,
+                    (note.title.isEmpty & note.body.isNotEmpty) ||
+                            (note.title.isNotEmpty & note.body.isEmpty)
+                        ? 'No text'
+                        : note.body,
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(color: Colors.black38),
