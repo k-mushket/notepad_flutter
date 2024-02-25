@@ -48,37 +48,60 @@ class _NotepadItemsState extends State<NotepadItems> {
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Row(
+        width: MediaQuery.of(context).size.width,
+        child: Container(
+          color: Colors.white,
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: TextButton.icon(
-                  icon: const Icon(Icons.lock_outline),
-                  label: const Text('Hide'),
-                  onPressed: () {},
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Material(
+                  color: Colors.white,
+                  child: InkWell(
+                    child: Column(
+                      children: [Icon(Icons.lock_outline), Text('Hide')],
+                    ),
+                  ),
                 ),
               ),
-              Expanded(
-                child: TextButton.icon(
-                  icon: const Icon(Icons.arrow_upward),
-                  label: const Text('Pin'),
-                  onPressed: () {},
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Material(
+                  color: Colors.white,
+                  child: InkWell(
+                    child: Column(
+                      children: [Icon(Icons.arrow_upward), Text('Pin')],
+                    ),
+                  ),
                 ),
               ),
-              Expanded(
-                child: TextButton.icon(
-                  icon: const Icon(Icons.exit_to_app_outlined),
-                  label: const Text('Move to'),
-                  onPressed: () {},
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Material(
+                  color: Colors.white,
+                  child: InkWell(
+                    child: Column(
+                      children: [
+                        Icon(Icons.exit_to_app_outlined),
+                        Text('Move to')
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => _deleteNote(note.id),
-                  label: const Text('Delete'),
-                  icon: const Icon(Icons.delete_outline),
+              Padding(
+                padding: EdgeInsets.all(15),
+                child: Material(
+                  color: Colors.white,
+                  child: InkWell(
+                    child: Column(
+                      children: [
+                        Icon(Icons.delete_outline),
+                        Text('Delete'),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
