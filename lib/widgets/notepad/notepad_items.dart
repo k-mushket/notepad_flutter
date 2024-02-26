@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_button_panel.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_textfield.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -38,35 +40,45 @@ class _NotepadItemsState extends State<NotepadItems> {
       (first, second) => second.creationDate.compareTo(first.creationDate),
     );
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: MasonryGridView.builder(
-        gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-        ),
-        itemCount: currentNotes.length,
-        itemBuilder: (context, index) {
-          final note = currentNotes[index];
-          final displayDate =
-              DateFormat('dd MMMM HH:mm').format(note.creationDate);
-          return GestureDetector(
-            onTap: () => Provider.of<NotepadProvider>(context, listen: false)
-                .openNotePage(note, context),
-            onLongPress: () {
-              Vibration.vibrate(
-                pattern: [0, 50],
-                intensities: [0, 100],
-              );
-              NotepadOverlay.overlayInstruments(note, context);
-              Provider.of<NotepadProvider>(context, listen: false)
-                  .changeAppBarIcons();
-            },
-            child: NotepadItem(
-              note: note,
-              displayDate: displayDate,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        children: [
+          const NotepadTextField(),
+          const ButtonPanel(),
+          Expanded(
+            child: MasonryGridView.builder(
+              gridDelegate:
+                  const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              itemCount: currentNotes.length,
+              itemBuilder: (context, index) {
+                final note = currentNotes[index];
+                final displayDate =
+                    DateFormat('dd MMMM HH:mm').format(note.creationDate);
+                return GestureDetector(
+                  onTap: () =>
+                      Provider.of<NotepadProvider>(context, listen: false)
+                          .openNotePage(note, context),
+                  onLongPress: () {
+                    Vibration.vibrate(
+                      pattern: [0, 50],
+                      intensities: [0, 100],
+                    );
+                    NotepadOverlay.overlayInstruments(note, context);
+                    Provider.of<NotepadProvider>(context, listen: false)
+                        .changeAppBarIcons();
+                  },
+                  child: NotepadItem(
+                    note: note,
+                    displayDate: displayDate,
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
