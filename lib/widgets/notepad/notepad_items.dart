@@ -132,6 +132,7 @@ class _NotepadItemsState extends State<NotepadItems> {
   void removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
+    Provider.of<NotepadProvider>(context, listen: false).changeAppBarIcons();
   }
 
   @override
