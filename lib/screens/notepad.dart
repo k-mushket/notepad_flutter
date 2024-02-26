@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:notepad_flutter/provider/notepad_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:notepad_flutter/screens/note_page.dart';
-
 import 'package:notepad_flutter/screens/notepad_check.dart';
 import 'package:notepad_flutter/screens/settings.dart';
 import 'package:notepad_flutter/widgets/notepad/notepad_items.dart';
@@ -46,48 +47,68 @@ class _NotepadState extends State<Notepad> {
 
   @override
   Widget build(BuildContext context) {
+    var isPressedNotepadItem = Provider.of<NotepadProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
+        title: isPressedNotepadItem.isPressedNotepadItem
+            ? Text('1 item selected')
+            : null,
+        centerTitle: true,
+        leading: isPressedNotepadItem.isPressedNotepadItem
+            ? IconButton(onPressed: () {}, icon: Icon(Icons.close),)
+            : null,
         flexibleSpace: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             return SafeArea(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.book_outlined),
-                    onPressed: () => navigateTo(0),
-                    style: IconButton.styleFrom(
-                      foregroundColor:
-                          _currentPage == 0 ? Colors.orangeAccent : Colors.grey,
+                children: [
+                  if (!isPressedNotepadItem.isPressedNotepadItem) ...[
+                    IconButton(
+                      icon: const Icon(Icons.book_outlined),
+                      onPressed: () => navigateTo(0),
+                      style: IconButton.styleFrom(
+                        foregroundColor: _currentPage == 0
+                            ? Colors.orangeAccent
+                            : Colors.grey,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                  IconButton(
-                    icon: const Icon(Icons.check_box_outlined),
-                    onPressed: () => navigateTo(1),
-                    style: IconButton.styleFrom(
-                      foregroundColor:
-                          _currentPage == 1 ? Colors.orangeAccent : Colors.grey,
+                    const SizedBox(width: 20),
+                    IconButton(
+                      icon: const Icon(Icons.check_box_outlined),
+                      onPressed: () => navigateTo(1),
+                      style: IconButton.styleFrom(
+                        foregroundColor: _currentPage == 1
+                            ? Colors.orangeAccent
+                            : Colors.grey,
+                      ),
                     ),
-                  ),
+                  ]
                 ],
               ),
             );
           },
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => Settings(),
-                ),
-              );
-            },
-          ),
+          if (!isPressedNotepadItem.isPressedNotepadItem) ...[
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Settings(),
+                  ),
+                );
+              },
+            ),
+          ] else ...[
+            IconButton(
+              icon: const Icon(Icons.checklist_rtl_outlined),
+              onPressed: () {},
+            ),
+          ]
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
+import 'package:notepad_flutter/provider/notepad_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -16,7 +17,7 @@ class NotepadItems extends StatefulWidget {
 }
 
 class _NotepadItemsState extends State<NotepadItems> {
-  static OverlayEntry? _overlayEntry;
+  OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
@@ -51,10 +52,10 @@ class _NotepadItemsState extends State<NotepadItems> {
         width: MediaQuery.of(context).size.width,
         child: Container(
           color: Colors.white,
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(15),
                 child: Material(
                   color: Colors.white,
@@ -65,7 +66,7 @@ class _NotepadItemsState extends State<NotepadItems> {
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(15),
                 child: Material(
                   color: Colors.white,
@@ -76,7 +77,7 @@ class _NotepadItemsState extends State<NotepadItems> {
                   ),
                 ),
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.all(15),
                 child: Material(
                   color: Colors.white,
@@ -91,14 +92,30 @@ class _NotepadItemsState extends State<NotepadItems> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
                 child: Material(
                   color: Colors.white,
                   child: InkWell(
-                    child: Column(
+                    onTap: () => _deleteNote(note.id),
+                    child: const Column(
                       children: [
                         Icon(Icons.delete_outline),
                         Text('Delete'),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15),
+                child: Material(
+                  color: Colors.white,
+                  child: InkWell(
+                    onTap: () => removeOverlay(),
+                    child: const Column(
+                      children: [
+                        Icon(Icons.remove),
+                        Text('Remove'),
                       ],
                     ),
                   ),
@@ -145,6 +162,8 @@ class _NotepadItemsState extends State<NotepadItems> {
                 intensities: [0, 100],
               );
               _overlayInstruments(note);
+              Provider.of<NotepadProvider>(context, listen: false)
+                  .changeAppBarIcons();
             },
             child: Container(
               decoration: BoxDecoration(

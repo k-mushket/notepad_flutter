@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NotePageOverlay {
   static OverlayEntry? _overlayEntry;
 
-  static void showOverlay(BuildContext context) {
+   void showOverlay(BuildContext context) {
     if (_overlayEntry != null) {
       return;
     }

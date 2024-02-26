@@ -43,7 +43,8 @@ class _NotePageState extends State<NotePage> {
     bodyFocusNode.addListener(
       () {
         if (bodyFocusNode.hasFocus) {
-          NotePageOverlay.showOverlay(context);
+          NotePageOverlay test = NotePageOverlay();
+          test.showOverlay(context);
         } else {
           NotePageOverlay.removeOverlay();
           bodyFocus = false;

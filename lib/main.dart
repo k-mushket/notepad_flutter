@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notepad_flutter/provider/notepad_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:notepad_flutter/theme/theme_provider.dart';
@@ -14,6 +15,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => NoteDatabase()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ChangeNotifierProvider(create: (context) => NotepadProvider()),
     ],
     child: Builder(
       builder: (context) => MaterialApp(
