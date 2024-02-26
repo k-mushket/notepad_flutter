@@ -53,11 +53,14 @@ class _NotepadState extends State<Notepad> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         title: isPressedNotepadItem.isPressedNotepadItem
-            ? Text('1 item selected')
+            ? const Text('1 item selected')
             : null,
         centerTitle: true,
         leading: isPressedNotepadItem.isPressedNotepadItem
-            ? IconButton(onPressed: () {}, icon: Icon(Icons.close),)
+            ? IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.close),
+              )
             : null,
         flexibleSpace: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {

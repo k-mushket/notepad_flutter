@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:notepad_flutter/provider/notepad_provider.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
@@ -17,17 +18,15 @@ class NotepadItems extends StatefulWidget {
 }
 
 class _NotepadItemsState extends State<NotepadItems> {
-  OverlayEntry? _overlayEntry;
-
   @override
   void initState() {
     super.initState();
     context.read<NoteDatabase>().readNotes();
   }
 
-  void _deleteNote(int id) {
-    context.read<NoteDatabase>().deleteNote(id);
-  }
+  // void _deleteNote(int id) {
+  //   context.read<NoteDatabase>().deleteNote(id);
+  // }
 
   @override
   void dispose() {
@@ -42,98 +41,98 @@ class _NotepadItemsState extends State<NotepadItems> {
     );
   }
 
-  Future<void> _overlayInstruments(Note note) async {
-    if (_overlayEntry != null) {
-      return;
-    }
-    _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        width: MediaQuery.of(context).size.width,
-        child: Container(
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    child: Column(
-                      children: [Icon(Icons.lock_outline), Text('Hide')],
-                    ),
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    child: Column(
-                      children: [Icon(Icons.arrow_upward), Text('Pin')],
-                    ),
-                  ),
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    child: Column(
-                      children: [
-                        Icon(Icons.exit_to_app_outlined),
-                        Text('Move to')
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    onTap: () => _deleteNote(note.id),
-                    child: const Column(
-                      children: [
-                        Icon(Icons.delete_outline),
-                        Text('Delete'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    onTap: () => removeOverlay(),
-                    child: const Column(
-                      children: [
-                        Icon(Icons.remove),
-                        Text('Remove'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-    Overlay.of(context).insert(_overlayEntry!);
-  }
+  // Future<void> _overlayInstruments(Note note) async {
+  //   if (_overlayEntry != null) {
+  //     return;
+  //   }
+  //   _overlayEntry = OverlayEntry(
+  //     builder: (context) => Positioned(
+  //       bottom: MediaQuery.of(context).viewInsets.bottom,
+  //       width: MediaQuery.of(context).size.width,
+  //       child: Container(
+  //         color: Colors.white,
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             const Padding(
+  //               padding: EdgeInsets.all(15),
+  //               child: Material(
+  //                 color: Colors.white,
+  //                 child: InkWell(
+  //                   child: Column(
+  //                     children: [Icon(Icons.lock_outline), Text('Hide')],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             const Padding(
+  //               padding: EdgeInsets.all(15),
+  //               child: Material(
+  //                 color: Colors.white,
+  //                 child: InkWell(
+  //                   child: Column(
+  //                     children: [Icon(Icons.arrow_upward), Text('Pin')],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             const Padding(
+  //               padding: EdgeInsets.all(15),
+  //               child: Material(
+  //                 color: Colors.white,
+  //                 child: InkWell(
+  //                   child: Column(
+  //                     children: [
+  //                       Icon(Icons.exit_to_app_outlined),
+  //                       Text('Move to')
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(15),
+  //               child: Material(
+  //                 color: Colors.white,
+  //                 child: InkWell(
+  //                   onTap: () => _deleteNote(note.id),
+  //                   child: const Column(
+  //                     children: [
+  //                       Icon(Icons.delete_outline),
+  //                       Text('Delete'),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.all(15),
+  //               child: Material(
+  //                 color: Colors.white,
+  //                 child: InkWell(
+  //                   onTap: () => removeOverlay(),
+  //                   child: const Column(
+  //                     children: [
+  //                       Icon(Icons.remove),
+  //                       Text('Remove'),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  //   Overlay.of(context).insert(_overlayEntry!);
+  // }
 
-  void removeOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    Provider.of<NotepadProvider>(context, listen: false).changeAppBarIcons();
-  }
+  // void removeOverlay() {
+  //   _overlayEntry?.remove();
+  //   _overlayEntry = null;
+  //   Provider.of<NotepadProvider>(context, listen: false).changeAppBarIcons();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +161,7 @@ class _NotepadItemsState extends State<NotepadItems> {
                 pattern: [0, 50],
                 intensities: [0, 100],
               );
-              _overlayInstruments(note);
+              NotepadOverlay.overlayInstruments(note, context);
               Provider.of<NotepadProvider>(context, listen: false)
                   .changeAppBarIcons();
             },
