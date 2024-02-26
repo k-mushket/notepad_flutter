@@ -47,35 +47,41 @@ class _NotepadItemsState extends State<NotepadItems> {
           const NotepadTextField(),
           const ButtonPanel(),
           Expanded(
-            child: MasonryGridView.builder(
-              gridDelegate:
-                  const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(19.0),
+                topRight: Radius.circular(19.0),
               ),
-              itemCount: currentNotes.length,
-              itemBuilder: (context, index) {
-                final note = currentNotes[index];
-                final displayDate =
-                    DateFormat('dd MMMM HH:mm').format(note.creationDate);
-                return GestureDetector(
-                  onTap: () =>
+              child: MasonryGridView.builder(
+                gridDelegate:
+                    const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                itemCount: currentNotes.length,
+                itemBuilder: (context, index) {
+                  final note = currentNotes[index];
+                  final displayDate =
+                      DateFormat('dd MMMM HH:mm').format(note.creationDate);
+                  return GestureDetector(
+                    onTap: () =>
+                        Provider.of<NotepadProvider>(context, listen: false)
+                            .openNotePage(note, context),
+                    onLongPress: () {
+                      Vibration.vibrate(
+                        pattern: [0, 50],
+                        intensities: [0, 100],
+                      );
+                      NotepadOverlay.overlayInstruments(note, context);
                       Provider.of<NotepadProvider>(context, listen: false)
-                          .openNotePage(note, context),
-                  onLongPress: () {
-                    Vibration.vibrate(
-                      pattern: [0, 50],
-                      intensities: [0, 100],
-                    );
-                    NotepadOverlay.overlayInstruments(note, context);
-                    Provider.of<NotepadProvider>(context, listen: false)
-                        .changeAppBarIcons();
-                  },
-                  child: NotepadItem(
-                    note: note,
-                    displayDate: displayDate,
-                  ),
-                );
-              },
+                          .changeAppBarIcons();
+                    },
+                    child: NotepadItem(
+                      note: note,
+                      displayDate: displayDate,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ],
