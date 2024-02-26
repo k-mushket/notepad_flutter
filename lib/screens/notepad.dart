@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:notepad_flutter/provider/notepad_provider.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_floating_button.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:notepad_flutter/screens/note_page.dart';
 import 'package:notepad_flutter/screens/notepad_check.dart';
 import 'package:notepad_flutter/screens/settings.dart';
 import 'package:notepad_flutter/widgets/notepad/notepad_items.dart';
@@ -58,7 +59,7 @@ class _NotepadState extends State<Notepad> {
         centerTitle: true,
         leading: isPressedNotepadItem.isPressedNotepadItem
             ? IconButton(
-                onPressed: () {},
+                onPressed: () => NotepadOverlay.removeOverlay(context),
                 icon: const Icon(Icons.close),
               )
             : null,
@@ -114,14 +115,7 @@ class _NotepadState extends State<Notepad> {
           ]
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const NotePage(),
-          ),
-        ),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: const NotepadFloatingButton(),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: PageView(
         controller: _pageController,

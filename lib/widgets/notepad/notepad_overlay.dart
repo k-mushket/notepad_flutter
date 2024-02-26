@@ -73,21 +73,6 @@ class NotepadOverlay {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Material(
-                  color: Colors.white,
-                  child: InkWell(
-                    onTap: () => removeOverlay(context),
-                    child: const Column(
-                      children: [
-                        Icon(Icons.remove),
-                        Text('Remove'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

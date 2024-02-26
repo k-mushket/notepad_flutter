@@ -12,8 +12,6 @@ class NotepadItem extends StatelessWidget {
   final Note note;
   final String displayDate;
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Container(

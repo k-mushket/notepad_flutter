@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
-import 'package:notepad_flutter/provider/notepad_provider.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_item.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
 
+import 'package:notepad_flutter/provider/notepad_provider.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_item.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/services/note_database.dart';
 
