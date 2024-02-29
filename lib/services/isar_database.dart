@@ -1,12 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:isar/isar.dart';
 import 'package:notepad_flutter/models/note.dart';
 
-class NoteDatabase extends ChangeNotifier {
+class IsarDatabase {
   static late Isar isar;
-  final List<Note> currentNotes = [];
 
   static Future<void> initialize() async {
     final dir = await getApplicationDocumentsDirectory();
@@ -17,23 +14,14 @@ class NoteDatabase extends ChangeNotifier {
   }
 
   Future<void> createNote(String title, String body) async {
-    // create a new note object
     final newNote = Note()
       ..title = title
       ..body = body;
-
-    // save to db
     await isar.writeTxn(() => isar.notes.put(newNote));
-
-    // re-read from db
-    readNotes();
   }
 
-  Future<void> readNotes() async {
-    List<Note> fetchNotes = await isar.notes.where().findAll();
-    currentNotes.clear();
-    currentNotes.addAll(fetchNotes);
-    notifyListeners();
+  Future<List<Note>> readNotes() async {
+    return await isar.notes.where().findAll();
   }
 
   Future<void> updateNote(int id, String newTitle, String newBody) async {
@@ -43,14 +31,10 @@ class NoteDatabase extends ChangeNotifier {
       existingNote.body = newBody;
       existingNote.creationDate = DateTime.now();
       await isar.writeTxn(() => isar.notes.put(existingNote));
-      await readNotes();
     }
   }
 
   Future<void> deleteNote(int id) async {
-    await isar.writeTxn(
-      () => isar.notes.delete(id),
-    );
-    await readNotes();
+    await isar.writeTxn(() => isar.notes.delete(id));
   }
 }

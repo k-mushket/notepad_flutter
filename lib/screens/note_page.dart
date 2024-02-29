@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:notepad_flutter/provider/database_provider.dart';
 import 'package:notepad_flutter/widgets/note_page/note_page_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 import 'package:notepad_flutter/models/note.dart';
-import 'package:notepad_flutter/services/note_database.dart';
 
 class NotePage extends StatefulWidget {
   final Note? note;
@@ -18,7 +18,7 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   late final TextEditingController titleTextController;
   late final TextEditingController bodyTextController;
-  late final NoteDatabase noteDatabase;
+  late final DatabaseProvider noteDatabase;
   late final FocusNode bodyFocusNode;
 
   bool bodyFocus = true;
@@ -30,7 +30,7 @@ class _NotePageState extends State<NotePage> {
     super.initState();
     titleTextController = TextEditingController(text: widget.note?.title ?? '');
     bodyTextController = TextEditingController(text: widget.note?.body ?? '');
-    noteDatabase = context.read<NoteDatabase>();
+    noteDatabase = context.read<DatabaseProvider>();
     bodyFocusNode = FocusNode();
     _originalText = bodyTextController.text;
 
@@ -58,7 +58,7 @@ class _NotePageState extends State<NotePage> {
     final body = bodyTextController.text;
     if ((title.isNotEmpty && !isSaved) || (body.isNotEmpty && !isSaved)) {
       if (widget.note == null) {
-        await noteDatabase.createNote(title, body);
+        await noteDatabase.addNote(title, body);
       } else {
         await noteDatabase.updateNote(widget.note!.id, title, body);
       }

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_button_panel.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_textfield.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 
-import 'package:notepad_flutter/provider/notepad_provider.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_item.dart';
-import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
 import 'package:notepad_flutter/models/note.dart';
-import 'package:notepad_flutter/services/note_database.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_button_panel.dart';
+import 'package:notepad_flutter/provider/database_provider.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_textfield.dart';
+import 'package:notepad_flutter/widgets/notepad/notepad_item.dart';
 
 class NotepadItems extends StatefulWidget {
   const NotepadItems({super.key});
@@ -23,7 +20,7 @@ class _NotepadItemsState extends State<NotepadItems> {
   @override
   void initState() {
     super.initState();
-    context.read<NoteDatabase>().readNotes();
+    context.read<DatabaseProvider>().loadNotes();
   }
 
   @override
@@ -33,8 +30,8 @@ class _NotepadItemsState extends State<NotepadItems> {
 
   @override
   Widget build(BuildContext context) {
-    final noteDatabase = context.watch<NoteDatabase>();
-    List<Note> currentNotes = noteDatabase.currentNotes;
+    final noteDatabase = context.watch<DatabaseProvider>();
+    List<Note> currentNotes = noteDatabase.notes;
 
     currentNotes.sort(
       (first, second) => second.creationDate.compareTo(first.creationDate),
@@ -49,8 +46,8 @@ class _NotepadItemsState extends State<NotepadItems> {
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(19.0),
-                topRight: Radius.circular(19.0),
+                topLeft: Radius.circular(1.0),
+                topRight: Radius.circular(1.0),
               ),
               child: MasonryGridView.builder(
                 gridDelegate:
@@ -62,23 +59,9 @@ class _NotepadItemsState extends State<NotepadItems> {
                   final note = currentNotes[index];
                   final displayDate =
                       DateFormat('dd MMMM HH:mm').format(note.creationDate);
-                  return GestureDetector(
-                    onTap: () =>
-                        Provider.of<NotepadProvider>(context, listen: false)
-                            .openNotePage(note, context),
-                    onLongPress: () {
-                      Vibration.vibrate(
-                        pattern: [0, 50],
-                        intensities: [0, 100],
-                      );
-                      NotepadOverlay.overlayInstruments(note, context);
-                      Provider.of<NotepadProvider>(context, listen: false)
-                          .changeAppBarIcons();
-                    },
-                    child: NotepadItem(
-                      note: note,
-                      displayDate: displayDate,
-                    ),
+                  return NotepadItem(
+                    note: note,
+                    displayDate: displayDate,
                   );
                 },
               ),
