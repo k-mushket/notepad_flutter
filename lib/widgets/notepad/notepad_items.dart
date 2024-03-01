@@ -46,8 +46,8 @@ class _NotepadItemsState extends State<NotepadItems> {
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(1.0),
-                topRight: Radius.circular(1.0),
+                topLeft: Radius.circular(19.0),
+                topRight: Radius.circular(19.0),
               ),
               child: MasonryGridView.builder(
                 gridDelegate:

@@ -3,7 +3,7 @@ import 'package:notepad_flutter/provider/notepad_provider.dart';
 import 'package:notepad_flutter/services/isar_database.dart';
 import 'package:provider/provider.dart';
 
-import 'package:notepad_flutter/theme/theme_provider.dart';
+import 'package:notepad_flutter/provider/theme_provider.dart';
 import 'package:notepad_flutter/provider/database_provider.dart';
 import 'package:notepad_flutter/screens/notepad.dart';
 

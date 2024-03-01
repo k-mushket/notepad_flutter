@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 
+import 'package:notepad_flutter/services/vibration.dart';
 import 'package:notepad_flutter/models/note.dart';
 import 'package:notepad_flutter/provider/notepad_provider.dart';
 import 'package:notepad_flutter/widgets/notepad/notepad_overlay.dart';
@@ -21,14 +21,13 @@ class NotepadItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => Provider.of<NotepadProvider>(context, listen: false)
           .openNotePage(note, context),
-      onLongPress: () {
-        Vibration.vibrate(
-          pattern: [0, 50],
-          intensities: [0, 100],
-        );
-        NotepadOverlay.overlayInstruments(note, context);
-        Provider.of<NotepadProvider>(context, listen: false)
-            .changeAppBarIcons();
+      onLongPress: () async {
+        await VibrationService.vibrate();
+        if (context.mounted) {
+          NotepadOverlay.overlayInstruments(note, context);
+          Provider.of<NotepadProvider>(context, listen: false)
+              .changeAppBarIcons();
+        }
       },
       child: Container(
         decoration: BoxDecoration(
